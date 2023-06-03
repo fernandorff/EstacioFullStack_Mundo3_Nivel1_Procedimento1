@@ -5,6 +5,7 @@ import EstacioFullStack_Mundo3_Nivel1_Procedimento1.model.PessoaFisica;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 public class PessoaFisicaRepo {
     private ArrayList<PessoaFisica> pessoasFisicas;
@@ -23,17 +24,20 @@ public class PessoaFisicaRepo {
         pessoaFisica.setIdade(novaIdade);
     }
 
-    public void excluir(int pessoaId) {
-        pessoasFisicas.remove(obter(pessoaId));
+    public void excluir(int id) {
+        pessoasFisicas.remove(obter(id));
     }
 
-    public PessoaFisica obter(int pessoaId) throws NoSuchElementException {
-        for (PessoaFisica pessoaFisica : pessoasFisicas) {
-            if (pessoaFisica.getId() == pessoaId) {
-                return pessoaFisica;
-            }
+    public PessoaFisica obter(int id) throws NoSuchElementException {
+        Optional<PessoaFisica> pessoaFisicaEncontrada = pessoasFisicas.stream().
+                filter(pessoaFisica -> pessoaFisica.getId() == id)
+                .findFirst();
+
+        if (pessoaFisicaEncontrada.isPresent()) {
+            return pessoaFisicaEncontrada.get();
+        } else {
+            throw new NoSuchElementException("Pessoa física com ID " + id + " não encontrada.");
         }
-        throw new NoSuchElementException("Pessoa Física com ID " + pessoaId + "não encontrada.");
     }
 
     public ArrayList<PessoaFisica> obterTodos() {

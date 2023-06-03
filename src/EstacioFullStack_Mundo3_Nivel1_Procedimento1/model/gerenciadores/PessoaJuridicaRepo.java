@@ -5,6 +5,7 @@ import EstacioFullStack_Mundo3_Nivel1_Procedimento1.model.PessoaJuridica;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 public class PessoaJuridicaRepo {
     private ArrayList<PessoaJuridica> pessoasJuridicas;
@@ -22,17 +23,20 @@ public class PessoaJuridicaRepo {
         pessoaJuridica.setCnpj(novoCpf);
     }
 
-    public void excluir(int pessoaId) {
-        pessoasJuridicas.remove(obter(pessoaId));
+    public void excluir(int id) {
+        pessoasJuridicas.remove(obter(id));
     }
 
-    public PessoaJuridica obter(int pessoaId) throws NoSuchElementException {
-        for (PessoaJuridica pessoaJuridica : pessoasJuridicas) {
-            if (pessoaJuridica.getId() == pessoaId) {
-                return pessoaJuridica;
-            }
+    public PessoaJuridica obter(int id) throws NoSuchElementException {
+        Optional<PessoaJuridica> pessoaJuridicaEncontrada = pessoasJuridicas.stream().
+                filter(pessoaJuridica -> pessoaJuridica.getId() == id)
+                .findFirst();
+
+        if (pessoaJuridicaEncontrada.isPresent()) {
+            return pessoaJuridicaEncontrada.get();
+        } else {
+            throw new NoSuchElementException("Pessoa jurídica com ID " + id + " não encontrada.");
         }
-        throw new NoSuchElementException("Pessoa Jurídica com ID " + pessoaId + "não encontrada.");
     }
 
     public ArrayList<PessoaJuridica> obterTodos() {

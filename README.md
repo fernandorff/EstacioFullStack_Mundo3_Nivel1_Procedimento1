@@ -6,7 +6,7 @@
 
 #### Disciplina: Nível 1: Iniciando o Caminho Pelo Java
 
-#### Número da Turma: 
+#### Número da Turma: RPG0014
 
 #### Semestre Letivo: 3
 
@@ -18,17 +18,19 @@
 
 ### Título da Prática: 1º Procedimento | Criação das Entidades e Sistema de Persistência
 
-#### Objetivos da Prática: 
+#### Objetivos da Prática:
 
-- Utilizar herança e polimorfismo na  definição de entidades.
+- Utilizar herança e polimorfismo na definição de entidades.
 - Utilizar persistência de objetos em arquivos binários.
 - Implementar uma interface cadastral em modo texto.
 - Utilizar o controle de exceções da plataforma Java.
 - No final do projeto, o aluno terá implementado um sistema cadastral em Java,
-utilizando os recursos da programação orientada a objetos e a persistência em
-arquivos binários.
+  utilizando os recursos da programação orientada a objetos e a persistência em
+  arquivos binários.
 
 #### Códigos solicitados neste roteiro de aula:
+
+###
 
 - Classe Pessoa (Entidade)
 
@@ -70,6 +72,8 @@ public class Pessoa implements Serializable {
     }
 }
 ```
+
+###
 
 - Classe PessoaFisica (Entidade)
 
@@ -115,6 +119,8 @@ public class PessoaFisica extends Pessoa implements Serializable {
 }
 ```
 
+###
+
 - Classe PessoaJuridica (Entidade)
 
 ```
@@ -148,6 +154,8 @@ public class PessoaJuridica extends Pessoa implements Serializable {
 }
 ```
 
+###
+
 - Classe PessoaFisicaRepo (Gerenciador)
 
 ```
@@ -158,69 +166,7 @@ import EstacioFullStack_Mundo3_Nivel1_Procedimento1.model.PessoaFisica;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
-
-public class PessoaFisicaRepo {
-     private ArrayList<PessoaFisica> pessoasFisicas;
-
-     public PessoaFisicaRepo() {
-         pessoasFisicas = new ArrayList<>();
-     }
-
-     public void inserir(PessoaFisica pessoaFisica){
-        pessoasFisicas.add(pessoaFisica);
-     }
-
-     public void alterar(PessoaFisica pessoaFisica, String novoNome, String novoCpf, int novaIdade){
-        pessoaFisica.setNome(novoNome);
-        pessoaFisica.setCpf(novoCpf);
-        pessoaFisica.setIdade(novaIdade);
-     }
-
-     public void excluir(int pessoaId){
-         pessoasFisicas.remove(obter(pessoaId));
-     }
-
-     public PessoaFisica obter(int pessoaId) throws NoSuchElementException {
-         for (PessoaFisica pessoaFisica: pessoasFisicas) {
-             if (pessoaFisica.getId() == pessoaId) {
-                 return pessoaFisica;
-             }
-         }
-         throw new NoSuchElementException("Pessoa Física com ID " + pessoaId + "não encontrada.");
-     }
-
-     public ArrayList<PessoaFisica> obterTodos(){
-         return pessoasFisicas;
-    }
-
-    public void persistir(String nomeArquivo) throws IOException {
-        ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(nomeArquivo));
-        outputStream.writeObject(pessoasFisicas);
-        outputStream.close();
-        System.out.println("Dados da pessoa física armazenados.");
-        System.out.println();
-    }
-
-    public void recuperar(String nomeArquivo) throws IOException, ClassNotFoundException {
-        ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(nomeArquivo));
-        pessoasFisicas = (ArrayList<PessoaFisica>) inputStream.readObject();
-        inputStream.close();
-        System.out.println("Dados da pessoa física recuperados.");
-        System.out.println();
-    }
-}
-```
-
-- Classe PessoaJuridicaRepo (Gerenciador)
-
-```
-package EstacioFullStack_Mundo3_Nivel1_Procedimento1.model.gerenciadores;
-
-import EstacioFullStack_Mundo3_Nivel1_Procedimento1.model.PessoaFisica;
-
-import java.io.*;
-import java.util.ArrayList;
-import java.util.NoSuchElementException;
+import java.util.Optional;
 
 public class PessoaFisicaRepo {
     private ArrayList<PessoaFisica> pessoasFisicas;
@@ -239,17 +185,20 @@ public class PessoaFisicaRepo {
         pessoaFisica.setIdade(novaIdade);
     }
 
-    public void excluir(int pessoaId) {
-        pessoasFisicas.remove(obter(pessoaId));
+    public void excluir(int id) {
+        pessoasFisicas.remove(obter(id));
     }
 
-    public PessoaFisica obter(int pessoaId) throws NoSuchElementException {
-        for (PessoaFisica pessoaFisica : pessoasFisicas) {
-            if (pessoaFisica.getId() == pessoaId) {
-                return pessoaFisica;
-            }
+    public PessoaFisica obter(int id) throws NoSuchElementException {
+        Optional<PessoaFisica> pessoaFisicaEncontrada = pessoasFisicas.stream().
+                filter(pessoaFisica -> pessoaFisica.getId() == id)
+                .findFirst();
+
+        if (pessoaFisicaEncontrada.isPresent()) {
+            return pessoaFisicaEncontrada.get();
+        } else {
+            throw new NoSuchElementException("Pessoa física com ID " + id + " não encontrada.");
         }
-        throw new NoSuchElementException("Pessoa Física com ID " + pessoaId + "não encontrada.");
     }
 
     public ArrayList<PessoaFisica> obterTodos() {
@@ -274,13 +223,79 @@ public class PessoaFisicaRepo {
 }
 ```
 
+###
+
+- Classe PessoaJuridicaRepo (Gerenciador)
+
+```
+package EstacioFullStack_Mundo3_Nivel1_Procedimento1.model.gerenciadores;
+
+import EstacioFullStack_Mundo3_Nivel1_Procedimento1.model.PessoaJuridica;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
+public class PessoaJuridicaRepo {
+    private ArrayList<PessoaJuridica> pessoasJuridicas;
+
+    public PessoaJuridicaRepo() {
+        pessoasJuridicas = new ArrayList<>();
+    }
+
+    public void inserir(PessoaJuridica pessoaJuridica) {
+        pessoasJuridicas.add(pessoaJuridica);
+    }
+
+    public void alterar(PessoaJuridica pessoaJuridica, String novoNome, String novoCpf) {
+        pessoaJuridica.setNome(novoNome);
+        pessoaJuridica.setCnpj(novoCpf);
+    }
+
+    public void excluir(int id) {
+        pessoasJuridicas.remove(obter(id));
+    }
+
+    public PessoaJuridica obter(int id) throws NoSuchElementException {
+        Optional<PessoaJuridica> pessoaJuridicaEncontrada = pessoasJuridicas.stream().
+                filter(pessoaJuridica -> pessoaJuridica.getId() == id)
+                .findFirst();
+
+        if (pessoaJuridicaEncontrada.isPresent()) {
+            return pessoaJuridicaEncontrada.get();
+        } else {
+            throw new NoSuchElementException("Pessoa jurídica com ID " + id + " não encontrada.");
+        }
+    }
+
+    public ArrayList<PessoaJuridica> obterTodos() {
+        return pessoasJuridicas;
+    }
+
+    public void persistir(String nomeArquivo) throws IOException {
+        ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(nomeArquivo));
+        outputStream.writeObject(pessoasJuridicas);
+        outputStream.close();
+        System.out.println("Dados da pessoa jurídica armazenados.");
+        System.out.println();
+    }
+
+    public void recuperar(String nomeArquivo) throws IOException, ClassNotFoundException {
+        ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(nomeArquivo));
+        pessoasJuridicas = (ArrayList<PessoaJuridica>) inputStream.readObject();
+        inputStream.close();
+        System.out.println("Dados da pessoa jurídica recuperados.");
+        System.out.println();
+    }
+}
+```
+
+###
+
 - Classe Application (Aplicação)
 
 ```
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
- */
 package EstacioFullStack_Mundo3_Nivel1_Procedimento1;
 
 import EstacioFullStack_Mundo3_Nivel1_Procedimento1.model.PessoaFisica;
@@ -307,10 +322,11 @@ public class Application {
             PessoaFisicaRepo pessoaFisicaRepo2 = new PessoaFisicaRepo();
             pessoaFisicaRepo2.recuperar("pessoas_fisicas.dat");
 
-            for (PessoaFisica pessoaFisica : pessoaFisicaRepo2.obterTodos()) {
-                pessoaFisica.exibir();
-                System.out.println();
-            }
+            pessoaFisicaRepo2.obterTodos()
+                    .forEach(pessoaFisica -> {
+                        pessoaFisica.exibir();
+                        System.out.println();
+                    });
 
         } catch (IOException | ClassNotFoundException erro) {
             System.out.println("Erro ao persistir ou recuperar os dados: " + erro.getMessage());
@@ -329,10 +345,12 @@ public class Application {
             PessoaJuridicaRepo pessoaJuridicaRepo2 = new PessoaJuridicaRepo();
             pessoaJuridicaRepo2.recuperar("pessoas_juridicas.dat");
 
-            for (PessoaJuridica pessoaJuridica : pessoaJuridicaRepo2.obterTodos()) {
-                pessoaJuridica.exibir();
-                System.out.println();
-            }
+            pessoaJuridicaRepo2.obterTodos().stream()
+                    .forEach(pessoaJuridica -> {
+                        pessoaJuridica.exibir();
+                        System.out.println();
+                    });
+
         } catch (IOException | ClassNotFoundException erro) {
             System.out.println("Erro ao persistir ou recuperar os dados: " + erro.getMessage());
         }
@@ -340,10 +358,11 @@ public class Application {
 }
 ```
 
+###
+
 - Resultado da execução do código.
 
 ```
-"C:\Program Files\Java\jdk-20\bin\java.exe" "-javaagent:C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2023.1.2\lib\idea_rt.jar=50645:C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2023.1.2\bin" -Dfile.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 -classpath "C:\Users\roxni\OneDrive\Área de Trabalho\JavaProjects\EstacioFullStack_Mundo3_Nivel1_Procedimento1\out\production\JavaApplication1" EstacioFullStack_Mundo3_Nivel1_Procedimento1.Application
 Dados da pessoa física armazenados.
 
 Dados da pessoa física recuperados.
@@ -378,5 +397,43 @@ Process finished with exit code 0
 
 ### Análise e Conclusão
 
-#### Quais as vantagens e desvantagens do uso de herança?
-A herança tem como principal objetivo reutilizar funcionalidades de outras elementos da aplicação.
+###
+
+#### 1. Quais as vantagens e desvantagens do uso de herança?
+
+A herança tem como principal objetivo reutilizar funcionalidades de outros elementos da aplicação por meio da extensão
+de atributos e métodos de uma classe.
+
+A vantagem da herança é a possibilidade de se definir novos atributos e métodos para a classe, além dos atributos e
+métodos que essa classe está herdando.
+
+A desvantagem de se utilizar a herança é enfraquecer o conceito de encapsulamento que é importante no paradigma de
+orientação a objeto. Além disso, torna a subclasse dependente da implementação da classe superior, tornando o código
+mais difícil de se manter, pois mudanças na classe superior pode afetar todas as classes que herdam dela.
+
+###
+
+#### 2. Por que a interface Serializable é necessária ao efetuar persistência em arquivos binários?
+
+Essa interface permite que os objetos sejam serializados, ou seja, convertidos em uma sequência de bytes e
+desserializados com a conversão de volta à um objeto.
+
+A vantagem de se usar arquivos binários é que eles ocupam menos espaço e podem ser escritos e lidos mais rapidamente que
+um arquivo de texto normal. Além disso, podem preservar o tipo e a estrutura dos dados.
+
+###
+
+#### 3. Como o paradigma funcional é utilizado pela API stream no Java?
+
+A API Stream do Java permite a execução de operações em sequência de forma declarativa usando o paradigma funcional. É
+possível especificar o que fazer com os elementos da sequência e criar um encadeamento de processamento de dados não
+modificam a fonte dos dados original.
+
+###
+
+#### 4. Quando trabalhamos com Java, qual padrão de desenvolvimento é adotado na persistência de dados em arquivos?
+
+O padrão adotado nesse projeto foi com o uso da classe ObjectOutputStream para escrever objetos em um arquivo binário e
+a classe ObjectInputStream para ler os objetos de um arquivo binário.
+
+Além disso é possível persistir dados por meio de arquivos de texto simples, CSV, XML, JSON e outros.

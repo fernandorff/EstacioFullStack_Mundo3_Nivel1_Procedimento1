@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
- */
 package EstacioFullStack_Mundo3_Nivel1_Procedimento1;
 
 import EstacioFullStack_Mundo3_Nivel1_Procedimento1.model.PessoaFisica;
@@ -28,10 +24,11 @@ public class Application {
             PessoaFisicaRepo pessoaFisicaRepo2 = new PessoaFisicaRepo();
             pessoaFisicaRepo2.recuperar("pessoas_fisicas.dat");
 
-            for (PessoaFisica pessoaFisica : pessoaFisicaRepo2.obterTodos()) {
-                pessoaFisica.exibir();
-                System.out.println();
-            }
+            pessoaFisicaRepo2.obterTodos()
+                    .forEach(pessoaFisica -> {
+                        pessoaFisica.exibir();
+                        System.out.println();
+                    });
 
         } catch (IOException | ClassNotFoundException erro) {
             System.out.println("Erro ao persistir ou recuperar os dados: " + erro.getMessage());
@@ -50,10 +47,12 @@ public class Application {
             PessoaJuridicaRepo pessoaJuridicaRepo2 = new PessoaJuridicaRepo();
             pessoaJuridicaRepo2.recuperar("pessoas_juridicas.dat");
 
-            for (PessoaJuridica pessoaJuridica : pessoaJuridicaRepo2.obterTodos()) {
-                pessoaJuridica.exibir();
-                System.out.println();
-            }
+            pessoaJuridicaRepo2.obterTodos().stream()
+                    .forEach(pessoaJuridica -> {
+                        pessoaJuridica.exibir();
+                        System.out.println();
+                    });
+
         } catch (IOException | ClassNotFoundException erro) {
             System.out.println("Erro ao persistir ou recuperar os dados: " + erro.getMessage());
         }
