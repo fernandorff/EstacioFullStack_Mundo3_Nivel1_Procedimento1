@@ -13,21 +13,21 @@ public class PessoaJuridicaRepo {
         pessoasJuridicas = new ArrayList<>();
     }
 
-    public void inserir(PessoaJuridica pessoaJuridica){
+    public void inserir(PessoaJuridica pessoaJuridica) {
         pessoasJuridicas.add(pessoaJuridica);
     }
 
-    public void alterar(PessoaJuridica pessoaJuridica, String novoNome, String novoCpf){
+    public void alterar(PessoaJuridica pessoaJuridica, String novoNome, String novoCpf) {
         pessoaJuridica.setNome(novoNome);
         pessoaJuridica.setCnpj(novoCpf);
     }
 
-    public void excluir(int pessoaId){
+    public void excluir(int pessoaId) {
         pessoasJuridicas.remove(obter(pessoaId));
     }
 
     public PessoaJuridica obter(int pessoaId) throws NoSuchElementException {
-        for (PessoaJuridica pessoaJuridica: pessoasJuridicas) {
+        for (PessoaJuridica pessoaJuridica : pessoasJuridicas) {
             if (pessoaJuridica.getId() == pessoaId) {
                 return pessoaJuridica;
             }
@@ -35,7 +35,7 @@ public class PessoaJuridicaRepo {
         throw new NoSuchElementException("Pessoa Jurídica com ID " + pessoaId + "não encontrada.");
     }
 
-    public ArrayList<PessoaJuridica> obterTodos(){
+    public ArrayList<PessoaJuridica> obterTodos() {
         return pessoasJuridicas;
     }
 

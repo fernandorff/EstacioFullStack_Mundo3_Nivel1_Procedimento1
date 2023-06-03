@@ -6,7 +6,8 @@ public class PessoaFisica extends Pessoa implements Serializable {
     private String cpf;
     private int idade;
 
-    public PessoaFisica() {}
+    public PessoaFisica() {
+    }
 
     public PessoaFisica(int id, String nome, String cpf, int idade) {
         super(id, nome);
